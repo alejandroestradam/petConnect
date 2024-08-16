@@ -1,5 +1,5 @@
 import { Avatar, Button, Flex } from 'antd'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { CiEdit } from 'react-icons/ci'
 import { Typography } from 'antd';
 import { useNavigate } from 'react-router-dom';
@@ -7,6 +7,11 @@ const { Text } = Typography
 
 export const Profile = ({user}) => {
   const navigate = useNavigate()
+  useEffect(() => {
+    if (!user) {
+      navigate('/'); // Navigate to login page if no user found
+    }
+  }, []);
 
   return (
     <Flex vertical justify='center' align='center'>

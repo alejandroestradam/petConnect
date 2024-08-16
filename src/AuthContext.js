@@ -27,10 +27,20 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('authToken');
   };
 
+  const updateUserContext = (updatedUser) => {
+    setUser(updatedUser);
+  };
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser)); // Simulate login by restoring user data from localStorage
+    }
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, updateUserContext }}>
       {children}
     </AuthContext.Provider>
   );
 };
-

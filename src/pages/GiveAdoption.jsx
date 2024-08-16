@@ -1,6 +1,7 @@
-import { Button, Flex, Form, Input, Select } from 'antd';
+import { Button, Flex, Form, Input, Select, InputNumber, notification } from 'antd';
 import Title from 'antd/es/typography/Title';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { petInfoForm } from '../helpers/const';
 import { MdOutlinePets } from 'react-icons/md';
 
@@ -8,9 +9,19 @@ const { Option } = Select;
 
 export const GiveAdoption = () => {
   const [form] = Form.useForm();
+  const navigate = useNavigate();
 
   const onFinish = (values) => {
-    console.log('Form Values:', values);
+    notification.success({
+      message: 'Pet Information Submitted',
+      description: 'The new pet has been successfully added for adoption!',
+      placement: 'topRight',
+      duration: 3,
+    });
+
+    setTimeout(() => {
+      navigate('/home');
+    }, 2000);
   };
 
   return (
@@ -30,7 +41,7 @@ export const GiveAdoption = () => {
                 rules={field.rules}
                 className='container mb-2'
               >
-                <Select placeholder="Select an option">
+                <Select placeholder="Select an option" style={{ width: '100%' }}>
                   <Option value={true}>Yes</Option>
                   <Option value={false}>No</Option>
                 </Select>
@@ -46,7 +57,12 @@ export const GiveAdoption = () => {
                 rules={field.rules}
                 className='container mb-2'
               >
-                <Input type="number" suffix="years" />
+                <InputNumber
+                  min={0}
+                  placeholder="Age"
+                  addonAfter="years"
+                  style={{ width: '100%' }}
+                />
               </Form.Item>
             );
           }
@@ -59,7 +75,12 @@ export const GiveAdoption = () => {
                 rules={field.rules}
                 className='container mb-2'
               >
-                <Input type="number" suffix="kg" />
+                <InputNumber
+                  min={0}
+                  placeholder="Weight"
+                  addonAfter="kg"
+                  style={{ width: '100%' }}
+                />
               </Form.Item>
             );
           }
@@ -72,7 +93,7 @@ export const GiveAdoption = () => {
               dependencies={field.dependencies}
               className='container mb-2'
             >
-              <Input />
+              <Input style={{ width: '100%' }} />
             </Form.Item>
           );
         })}
@@ -85,4 +106,3 @@ export const GiveAdoption = () => {
     </Flex>
   );
 };
-

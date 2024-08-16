@@ -1,77 +1,49 @@
 import { Card, Col, Row, Spin } from 'antd';
 import Meta from 'antd/es/card/Meta';
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useState } from 'react';
 import { IoIosHeartHalf } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import { PetModal } from './PetModal';
 
-export const InfiniteGrid = ({pets, isRequest}) => {
-  const navigate = useNavigate()
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 12;
-  const [displayedPets, setDisplayedAnimals] = useState([]);
-  const observerRef = useRef();
-  const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false)
+export const InfiniteGrid = ({ pets, isRequest }) => {
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [selectedPet, setSelectedPet] = useState(null);
 
-  useEffect(() => {
-    const loadMoreAnimals = () => {
-      if (loading) return;
+  const onClose = () => {
+    setOpen(false);
+    setSelectedPet(null);
+  };
 
-      setLoading(true);
-      const startIndex = (currentPage - 1) * pageSize;
-      const endIndex = startIndex + pageSize;
-      setDisplayedAnimals((prevAnimals) => [
-        ...prevAnimals,
-        ...pets.slice(startIndex, endIndex),
-      ]);
-      setLoading(false);
-    };
+  const onConfirm = () => {
+    console.log('Adoption process confirmed');
+  };
 
-    loadMoreAnimals();
-  }, [currentPage, pets, loading]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && displayedPets.length < pets.length) {
-          setCurrentPage((prevPage) => prevPage + 1);
-        }
-      },
-      {
-        root: null,
-        rootMargin: '0px',
-        threshold: 1.0,
-      }
-    );
-
-    if (observerRef.current) {
-      observer.observe(observerRef.current);
+  const handleCardClick = (pet) => {
+    if (isRequest) {
+      setSelectedPet(pet);
+      setOpen(true);
+    } else {
+      navigate('/individualPet', { state: { pet } });
     }
+  };
 
-    return () => {
-      if (observerRef.current) {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        observer.unobserve(observerRef.current);
-      }
-    };
-  }, [displayedPets, pets.length]);
   return (
     <>
       <Row gutter={[16, 16]} className="p-4">
-        {displayedPets.map((pet) => (
+        {pets.slice(0, 6).map((pet) => (
           <Col
-            key={pet.id}
+            key={pet.petUrl} // Ensure unique key (using petUrl for simplicity)
             span={12}
             className="flex justify-center items-center"
           >
             <Card
-              onClick={() => isRequest ? setOpen(true) : navigate('/individualPet', { state: { pet } })}
+              onClick={() => handleCardClick(pet)}
               hoverable
               cover={
                 <img
-                  alt={pet.name}
-                  src={"https://hips.hearstapps.com/hmg-prod/images/happy-dog-outdoors-royalty-free-image-1652927740.jpg?crop=0.447xw:1.00xh;0.187xw,0&resize=980:*"}
+                  alt={pet.petName}
+                  src={pet.petUrl}
                   style={{
                     objectFit: 'cover',
                     height: '150px',
@@ -82,21 +54,24 @@ export const InfiniteGrid = ({pets, isRequest}) => {
               style={{ height: '250px', width: '170px' }} // Ensure cards are consistent in size
             >
               <Meta
-                title={pet.name}
-                description={'1 month'}
+                title={pet.petName}
+                description={`Age: ${pet.petAge} years`}
                 avatar={<IoIosHeartHalf />}
               />
             </Card>
           </Col>
         ))}
       </Row>
-      {loading && (
-        <div className="flex justify-center items-center py-4">
-          <Spin />
-          <span className="ml-2">Loading...</span>
-        </div>
+
+      {/* Modal for displaying pet details */}
+      {selectedPet && (
+        <PetModal
+          open={open}
+          pet={selectedPet}
+          onClose={onClose}
+        />
       )}
-      <div ref={observerRef} style={{ height: '1px' }} />
     </>
-  )
-}
+  );
+};
+

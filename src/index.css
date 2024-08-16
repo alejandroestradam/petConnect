@@ -41,3 +41,6 @@ code {
 .ant-card-meta-avatar{
   align-self: center;
 }
+.ant-modal-mask {
+  background-color: rgba(0, 0, 0, 0.05) !important /* Customize the transparency */
+}

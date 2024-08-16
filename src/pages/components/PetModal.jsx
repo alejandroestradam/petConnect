@@ -17,7 +17,7 @@ export const PetModal = ({ open, pet, onClose, onConfirm }) => {
 
   return (
     <Modal
-      title={pet.name}
+      title={pet.petName}
       open={open}
       onCancel={onClose}
       footer={null}
@@ -25,26 +25,27 @@ export const PetModal = ({ open, pet, onClose, onConfirm }) => {
     >
       <div className="flex flex-col items-center">
         <img
-          src={"https://hips.hearstapps.com/hmg-prod/images/happy-dog-outdoors-royalty-free-image-1652927740.jpg?crop=0.447xw:1.00xh;0.187xw,0&resize=980:*"}
+          src={pet.petUrl}
           alt="pet"
           className="w-48 h-48 rounded-full object-cover mb-4"
         />
         <div className="text-center">
-          <p className="text-lg"><strong>Location:</strong> {pet.location || 'Zapopan'}</p>
-          <p className="text-lg"><strong>Age:</strong> {pet.age || '10 years'}</p>
-          <p className="text-lg"><strong>Weight:</strong> {pet.weight_kg ? `${pet.weight_kg} kg` : 'Weight unavailable'}</p>
-          <p className="text-lg"><strong>Sickness:</strong> {pet.sickness || 'None'}</p>
-          <p className="text-lg"><strong>Size:</strong> {pet.size ? 'Large' : 'Small'}</p>
-          <p className="text-lg"><strong>Vaccinated:</strong> {pet.vaccinated ? 'Yes' : 'No'}</p>
+          <p className="text-lg"><strong>Location:</strong> {pet.petLocation || 'Location unavailable'}</p>
+          <p className="text-lg"><strong>Age:</strong> {pet.petAge ? `${pet.petAge} years` : 'Age unavailable'}</p>
+          <p className="text-lg"><strong>Weight:</strong> {pet.petWeight ? `${pet.petWeight} kg` : 'Weight unavailable'}</p>
+          <p className="text-lg"><strong>Sickness:</strong> {pet.petSickness || 'None'}</p>
+          <p className="text-lg"><strong>Vaccinated:</strong> {pet.petVaccinated ? 'Yes' : 'No'}</p>
         </div>
-        <Popconfirm
+        {(onConfirm && !pet.inAdoptionProcess) &&
+          <Popconfirm
           title="Are you sure you want to begin the adoption process?"
           onConfirm={handleConfirm}
           okText="Yes"
           cancelText="No"
-        >
-          <Button type="primary" className="mt-4 h-12">Begin Adoption Process</Button>
-        </Popconfirm>
+          >
+            <Button type="primary" className="mt-4 h-12">Begin Adoption Process</Button>
+          </Popconfirm>
+        }
       </div>
     </Modal>
   );

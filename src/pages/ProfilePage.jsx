@@ -1,10 +1,10 @@
-import { Avatar, Button, Flex, Input, Typography, Form, Modal } from 'antd';
+import { Avatar, Button, Flex, Input, Typography, Form, Modal, notification } from 'antd';
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../AuthContext';
 import { updateUser } from '../crudRequests';
 
 export const ProfilePage = () => {
-  const { user } = useContext(AuthContext);
+  const { user, updateUserContext } = useContext(AuthContext);
 
   const [originalValues] = useState({
     firstname: user.firstName,
@@ -31,24 +31,44 @@ export const ProfilePage = () => {
 
   const confirmSave = () => {
     Modal.confirm({
-      title: 'Confirm Changes',
+      title: 'Confirm Save',
       content: 'Are you sure you want to save these changes?',
       onOk() {
         handleSave();
       },
       onCancel() {
-        console.log('Changes not saved');
+        notification.info({
+          message: 'Changes not saved',
+          description: 'Your changes were not saved.',
+          placement: 'topRight',
+        });
       },
     });
   };
 
   const handleSave = async () => {
     try {
-      await updateUser(formValues); // Pass formValues to updateUser function
+      // await updateUser(formValues);
+      updateUserContext({
+        firstName: formValues.firstname,
+        lastName: formValues.lastname,
+        location: formValues.location,
+        email: formValues.email,
+        cellphone: formValues.phone,
+        password: formValues.password,
+      });
       setHasChanges(false);
-      console.log('User updated successfully');
+      notification.success({
+        message: 'User updated',
+        description: 'Your profile has been successfully updated.',
+        placement: 'topRight',
+      });
     } catch (error) {
-      console.error('Failed to update user:', error);
+      notification.error({
+        message: 'Update Failed',
+        description: 'There was an error updating your profile.',
+        placement: 'topRight',
+      });
     }
   };
 
@@ -110,8 +130,8 @@ export const ProfilePage = () => {
       </Flex>
       <Button
         type="primary"
-        onClick={confirmSave} // Trigger confirmation modal before saving
-        disabled={!hasChanges} // Disable if no changes detected
+        onClick={confirmSave}
+        disabled={!hasChanges}
         className="mt-4 w-full"
       >
         Save Changes
@@ -119,3 +139,4 @@ export const ProfilePage = () => {
     </Flex>
   );
 };
+

@@ -1,6 +1,6 @@
-import { Flex, Select, Spin } from 'antd'
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import { Flex, Select, Spin, Button, Tag } from 'antd';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { MdOutlinePets } from 'react-icons/md';
 import { filterConfig } from '../helpers/const';
 import Title from 'antd/es/typography/Title';
@@ -20,20 +20,61 @@ export const SearchPets = () => {
     size: ''
   });
 
+  const locations = ['Phoenix', 'Houston', 'Washington', 'Seattle', 'Jacksonville'];
+  const petNames = ['Buddy', 'Max', 'Bella', 'Lucy', 'Charlie', 'Daisy', 'Rocky', 'Molly', 'Bailey', 'Sadie', 'Oscar', 'Coco'];
+
+  const getRandomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
   useEffect(() => {
-    setLoading(true)
-    axios
-      .get('https://freetestapi.com/api/v1/animals')
-      .then((res) => {
-        console.log('data: ', res.data);
-        setPets(res.data);
-        setFilteredPets(res.data);
-        setLoading(false)
-      })
-      .catch((err) => {
-        setLoading(false)
-        console.log(err);
-      });
+    setLoading(true);
+
+    const fetchPets = async () => {
+      try {
+        const dogResponse = await axios.get('https://api.thedogapi.com/v1/images/search', {
+          params: { limit: 10 },
+          headers: { 'x-api-key': 'your_dog_api_key' }
+        });
+
+        const catResponse = await axios.get('https://api.thecatapi.com/v1/images/search', {
+          params: { limit: 10 },
+          headers: { 'x-api-key': 'your_cat_api_key' }
+        });
+
+        const dogData = dogResponse.data.map((dog) => ({
+          petName: getRandomItem(petNames),
+          petType: 'Dog',
+          petLocation: getRandomItem(locations),
+          petAge: Math.floor(Math.random() * 10) + 1,
+          petWeight: Math.floor(Math.random() * 30) + 5,
+          petSickness: 'None',
+          petVaccinated: Math.random() > 0.5,
+          petUrl: dog.url,
+          inAdoptionProcess: false // Add a status flag for adoption process
+        }));
+
+        const catData = catResponse.data.map((cat) => ({
+          petName: getRandomItem(petNames),
+          petType: 'Cat',
+          petLocation: getRandomItem(locations),
+          petAge: Math.floor(Math.random() * 10) + 1,
+          petWeight: Math.floor(Math.random() * 10) + 3,
+          petSickness: 'None',
+          petVaccinated: Math.random() > 0.5,
+          petUrl: cat.url,
+          inAdoptionProcess: false // Add a status flag for adoption process
+        }));
+
+        const combinedPets = [...dogData, ...catData];
+        setPets(combinedPets);
+        setFilteredPets(combinedPets);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.error('Error fetching pets:', error);
+      }
+    };
+
+    fetchPets();
   }, []);
 
   const handleFilterChange = (value, key) => {
@@ -43,24 +84,38 @@ export const SearchPets = () => {
     }));
   };
 
+  const resetFilters = () => {
+    setFilters({
+      type: '',
+      location: '',
+      age: '',
+      size: ''
+    });
+    setFilteredPets(pets); // Reset to show all pets
+  };
+
   useEffect(() => {
     const applyFilters = () => {
       let filtered = pets;
 
       if (filters.type) {
-        filtered = filtered.filter((pet) => pet.type === filters.type);
+        filtered = filtered.filter((pet) => pet.petType.toLowerCase() === filters.type);
       }
 
       if (filters.location) {
-        filtered = filtered.filter((pet) => pet.location === filters.location);
+        filtered = filtered.filter((pet) => pet.petLocation.toLowerCase() === filters.location.toLowerCase());
       }
 
       if (filters.age) {
-        filtered = filtered.filter((pet) => pet.age === filters.age);
+        filtered = filtered.filter((pet) =>
+          filters.age === 'puppy' ? pet.petAge < 2 : pet.petAge >= 2
+        );
       }
 
       if (filters.size) {
-        filtered = filtered.filter((pet) => pet.size === filters.size);
+        filtered = filtered.filter((pet) =>
+          filters.size === 'small' ? pet.petWeight < 15 : pet.petWeight >= 15
+        );
       }
 
       setFilteredPets(filtered);
@@ -79,7 +134,12 @@ export const SearchPets = () => {
     setSelectedPet(null);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = (pet) => {
+    setPets((prevPets) =>
+      prevPets.map((p) =>
+        p.petUrl === pet.petUrl ? { ...p, inAdoptionProcess: true } : p
+      )
+    );
     setIsModalVisible(false);
   };
 
@@ -91,6 +151,7 @@ export const SearchPets = () => {
           <Select
             className='mx-1'
             key={filter.key}
+            value={filters[filter.key] || undefined} // Bind value to filters state
             showSearch={filter.showSearch}
             placeholder={filter.placeholder}
             onChange={(value) => handleFilterChange(value, filter.key)}
@@ -109,22 +170,32 @@ export const SearchPets = () => {
         ))}
       </Flex>
 
+      {/* Reset Filters Button */}
+      <Flex justify="center" className="mb-4">
+        <Button type="primary" onClick={resetFilters}>Reset Filters</Button>
+      </Flex>
+
       {filteredPets.map((pet) => (
         <div
-          key={pet.id}
+          key={pet.petUrl}
           className="relative bg-white w-full rounded-lg shadow-lg flex items-center p-4 mb-4 cursor-pointer"
           onClick={() => showModal(pet)} // Show modal on click
         >
+          {pet.inAdoptionProcess && (
+            <Tag color="orange" className="absolute top-1 right-0">
+              In Process
+            </Tag>
+          )}
           <img
-            src={"https://hips.hearstapps.com/hmg-prod/images/happy-dog-outdoors-royalty-free-image-1652927740.jpg?crop=0.447xw:1.00xh;0.187xw,0&resize=980:*"}
+            src={pet.petUrl}
             alt="pet"
             className="w-1/2 h-48 object-cover rounded-lg"
           />
           <div className="flex flex-col justify-center items-center w-2/3 p-4">
-            <h2 className="text-xl font-bold mb-2">{pet.name}</h2>
-            <p className="text-gray-600 mb-2">{pet.location || 'Zapopan'}</p>
-            <p className="text-gray-600 mb-2">{pet.age || '10 years'}</p>
-            <p className="text-gray-600 mb-2">{pet.weight_kg ? `${pet.weight_kg} kg` : 'Weight unavailable'}</p>
+            <h2 className="text-xl font-bold mb-2">{pet.petName}</h2>
+            <p className="text-gray-600 mb-2">{pet.petLocation}</p>
+            <p className="text-gray-600 mb-2">{`${pet.petAge} years`}</p>
+            <p className="text-gray-600 mb-2">{`${pet.petWeight} kg`}</p>
           </div>
           <MdOutlinePets className="absolute bottom-2 right-2 text-4xl text-gray-500" />
         </div>
@@ -133,7 +204,7 @@ export const SearchPets = () => {
         open={isModalVisible}
         pet={selectedPet}
         onClose={handleModalClose}
-        onConfirm={handleConfirm}
+        onConfirm={() => handleConfirm(selectedPet)} // Pass the selected pet to confirm
       />
       {loading && (
         <div className="flex justify-center items-center py-4">

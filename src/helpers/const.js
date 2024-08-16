@@ -181,7 +181,7 @@ export const filterConfig = [
   {
     key: 'location',
     placeholder: 'Location',
-    options: ['Zapopan', 'Guadalajara', 'NY', 'LA'],
+    options: ['Phoenix', 'Houston', 'Washington', 'Seattle', 'Jacksonville'], // Updated locations
     width: 180,
     showSearch: true
   },
@@ -198,3 +198,4 @@ export const filterConfig = [
     width: 120
   }
 ];
+

@@ -6,9 +6,8 @@ export const UserModal = ({ open, user, onClose, onConfirm }) => {
 
   const handleConfirm = () => {
     notification.success({
-      message: 'User marked as contacted succesfully',
-      description:
-        "Thanks for contact the user! We hope the process goes well.",
+      message: 'User marked as contacted successfully',
+      description: "Thanks for contacting the user! We hope the process goes well.",
       placement: 'topRight',
       duration: 5
     });
@@ -25,7 +24,7 @@ export const UserModal = ({ open, user, onClose, onConfirm }) => {
     >
       <div className="flex flex-col items-center">
         <img
-          src={"http://www.cecyteo.edu.mx/Nova/App_themes/Site2015/assets/admin/pages/media/profile/profile_user.jpg"}
+          src={user.image}
           alt="user"
           className="w-48 h-48 rounded-full object-cover mb-4"
         />
@@ -34,10 +33,10 @@ export const UserModal = ({ open, user, onClose, onConfirm }) => {
           <p className="text-lg"><strong>Address:</strong> {`${user.address.address}, ${user.address.city}, ${user.address.state}`}</p>
           <p className="text-lg"><strong>Email:</strong> {user.email}</p>
           <p className="text-lg"><strong>Phone:</strong> {user.phone}</p>
-          <p className="text-lg"><strong>Message:</strong> {user.message || 'Id love to adopt this beautiful pet!'}</p>
+          <p className="text-lg"><strong>Message:</strong> {user.message || 'I would love to adopt this beautiful pet!'}</p>
         </div>
         <Popconfirm
-          title="Are you sure you want mark the user as contacted?"
+          title="Are you sure you want to mark the user as contacted?"
           onConfirm={handleConfirm}
           okText="Yes"
           cancelText="No"
