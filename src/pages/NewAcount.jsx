@@ -4,13 +4,12 @@ import { newUserForm } from '../helpers/const';
 import Title from 'antd/es/typography/Title';
 import { AiOutlineArrowLeft } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
-import { newUser } from '../crudRequests';
 
 export const NewAcount = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [formValues, setFormValues] = useState({});
+  const [, setFormValues] = useState({});
 
   const onFinish = (values) => {
     console.log('Form Values:', values);

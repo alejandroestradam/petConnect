@@ -3,10 +3,9 @@ import { Button, Layout as AntdLayout } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Title from 'antd/es/typography/Title';
 // import { IoMdMenu } from 'react-icons/io';
-import { FaPowerOff, FaUserAlt } from 'react-icons/fa';
-import { CiPower, CiSearch } from 'react-icons/ci';
+import { FaUserAlt } from 'react-icons/fa';
+import { CiPower} from 'react-icons/ci';
 import { Footer } from 'antd/es/layout/layout';
-import { GoHome } from 'react-icons/go';
 import { MdHomeFilled, MdOutlinePets } from 'react-icons/md';
 
 const { Header, Content } = AntdLayout;
