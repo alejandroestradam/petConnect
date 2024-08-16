@@ -19,8 +19,8 @@ export const Profile = ({user}) => {
       <Avatar size={128} src="https://api.dicebear.com/7.x/miniavs/svg?seed=1" className='bg-white'/>
       <Flex justify='center' align='center'>
         <Flex vertical className='ml-5 mt-2'>
-          <Text className='self-center text-white font-bold'>{user.firstName}, {user.lastName}</Text>
-          <Text className='self-center text-white font-bold'>{user.location}</Text>
+          <Text className='self-center text-white font-bold'>{user?.firstName}, {user?.lastName}</Text>
+          <Text className='self-center text-white font-bold'>{user?.location}</Text>
         </Flex>
         {/* <Button icon={}/> */}
         <CiEdit className='w-6 h-6 ml-2 text-white' onClick={()=> navigate('/profile', { state: { user } })}/>
