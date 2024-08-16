@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.fullScreen {
+  width: 100vw;
+  height: 100vh;
+  overflow-x: hidden;
+  background-color: #58B8A7;
+}
+/* Custom styles for the submit button */
+.ant-btn-primary {
+  background-color: black;
+  border-color: black;
+}
+
+/* Optionally, you can customize the hover state */
+.ant-btn-primary:hover, 
+.ant-btn-primary:focus {
+  background-color: #333; /* Darker shade for hover */
+  border-color: #333;
+}
+.ant-card-meta-avatar{
+  align-self: center;
+}
