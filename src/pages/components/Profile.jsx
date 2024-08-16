@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Avatar, Button, Flex } from 'antd'
 import React, { useEffect } from 'react'
 import { CiEdit } from 'react-icons/ci'
